@@ -19,6 +19,7 @@ var b_context = b_canvas.getContext("2d");
 // b_context.fillRect(50, 25, 150, 100);   
 var px= 250;
 var py = 150;
+var count =0;
 //var score=0;
 
 
@@ -45,19 +46,20 @@ var showSprite=function()
 var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
     b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
-    //var text="Score "+Shark.score; 
-    var text="Score "+myFish[0].x; 
+    //var text="Score "+Shark.score;
+    count+=1; 
+    var text="Count "+count; 
     b_context.font="italic 40px serif"; 
     b_context.fillStyle = "rgb(200, 2, 2)";
-        b_context.fillText(text,40,40);   
+    b_context.fillText(text,40,40);   
 
 };
-window.onload=function()
-{
+// window.onload=function()
+// {
 
-    //this isn't called until after all the HTML elements are loaded
-    showSprite ();
-};
+//     //this isn't called until after all the HTML elements are loaded
+//     //showSprite ();
+// };
 
 var Shark = new (function(){  
 
@@ -185,61 +187,61 @@ var update = function(){
     draw();
     
     
-    for(this.i=0;i<myFish.length;i++){
-        myFish[i].draw();
-    }   
-    for(this.i=0;i<myMine.length;i++){
-        myMine[i].draw();
-    }
-    Shark.draw();
-    debugger
-    for(this.i=0;i<myFish.length;i++){
-        if(Shark.posx>myFish[i].x&&Shark.posx<myFish[i].x+myFish[i].width){
-            if(Shark.posy>myFish[i].x&&Shark.posy<myFish[i].y+myFish[i].height){
-                Shark.score+=20;
-                myFish[i].x=Math.floor(Math.random()*901)+1000;
-                myFish[i].y=Math.floor(Math.random()*451);
-            }
+    // for(this.i=0;i<myFish.length;i++){
+    //     myFish[i].draw();
+    // }   
+    // for(this.i=0;i<myMine.length;i++){
+    //     myMine[i].draw();
+    // }
+    // Shark.draw();
+    //debugger
+    // for(this.i=0;i<myFish.length;i++){
+    //     if(Shark.posx>myFish[i].x&&Shark.posx<myFish[i].x+myFish[i].width){
+    //         if(Shark.posy>myFish[i].x&&Shark.posy<myFish[i].y+myFish[i].height){
+    //             Shark.score+=20;
+    //             myFish[i].x=Math.floor(Math.random()*901)+1000;
+    //             myFish[i].y=Math.floor(Math.random()*451);
+    //         }
             
-        }
-    }
+    //     }
+    // }
     window.requestAnimFrame(update, document.body);
 
 };
 
 
-window.requestAnimFrame(update, document.body);
+// window.requestAnimFrame(update, document.body);
 
 
-window.addEventListener('keydown', function(event) {
-    if (event.keyCode === 37) 
-    {
-        px--;    
+// window.addEventListener('keydown', function(event) {
+//     if (event.keyCode === 37) 
+//     {
+//         px--;    
 
-    }
-    if (event.keyCode === 39) {
+//     }
+//     if (event.keyCode === 39) {
 
-        px++;   
-    }
-    if (event.keyCode === 38) {
+//         px++;   
+//     }
+//     if (event.keyCode === 38) {
 
-        py--;
-    }
-    if (event.keyCode === 40) {
-        py++;
-    }  
-}, false);
+//         py--;
+//     }
+//     if (event.keyCode === 40) {
+//         py++;
+//     }  
+// }, false);
 
 //  windowg5.addEventListener( 'touchstart',function(event){
 //window.addEventListener( 'touchstart', onTouchStart, false );
 
-b_canvas.addEventListener("mousedown", halmaOnClick, false);
+// b_canvas.addEventListener("mousedown", halmaOnClick, false);
 
-function halmaOnClick(e) {
+// function halmaOnClick(e) {
 
-    px=e.pageX;
-    py=e.pageY;
-}
+//     px=e.pageX;
+//     py=e.pageY;
+// }
 
 //b_context.addEventListener( 'touchstart', onTouchStart, false );
 //function onTouchStart(event) {
@@ -247,7 +249,16 @@ function halmaOnClick(e) {
 
 
 //}
-
+var app = {
+    // Application Constructor
+    initialize: function() {
+       
+    
+          window.requestAnimFrame(update, document.body);
+    }
+    
+};
+app.initialize();
 
 //  b_context.addEventListener('touchmove', function(event) {
 //   event.preventDefault();

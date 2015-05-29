@@ -46,9 +46,9 @@ var showSprite=function()
 var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
     b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
-    //var text="Score "+Shark.score;
-    count+=1; 
-    var text="Count "+count; 
+    var text="Score "+Shark.score;
+    //count+=1; 
+    //var text="Count "+count; 
     b_context.font="italic 40px serif"; 
     b_context.fillStyle = "rgb(200, 2, 2)";
     b_context.fillText(text,40,40);   
@@ -67,11 +67,13 @@ var Shark = new (function(){
     this.posx=50;
     this.posy=50;
     this.score=0;
+    this.boxX;
+    this.boxY;
     shark.image = new Image();  
     shark.image.src = "shark.png";  
     actualFrame = 0;
-    height=52;
-    width=56;
+    this.height=52;
+    this.width=56;
     frameCount =0;
 
     //functions
@@ -93,7 +95,15 @@ var Shark = new (function(){
         else if(py<this.posy&&py<this.posy-5){
             this.posy-=2;
         }
-        b_context.drawImage(shark, width* actualFrame,0 , width, height,this.posx-width/2,this.posy-height/2, width, height); 
+        b_context.drawImage(shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
+        this.boxX=this.posx-this.width/2;
+        this.boxY=this.posy-this.height/2;
+        b_context.beginPath();
+        b_context.lineWidth="1";
+        b_context.strokeStyle="blue";
+        b_context.rect(this.boxX,this.boxY,this.width,this.height); 
+        b_context.stroke();
+
 
         if (actualFrame == frames) {  
             actualFrame = 0;  
@@ -111,48 +121,34 @@ var Shark = new (function(){
 var myFish =[];
 var myMine =[];
 
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-
-myMine.push(new Mine());
-
-
-
-
 function Fish(){   
     //attributes        
     this.x=Math.floor(Math.random()*901)+1000;
     this.y=Math.floor(Math.random()*401);
-    this.image = new Image();  
-    this.image.src = "fish.png"; 
+    this.boxX;
+    this.boxY;
+    this.height=50;
+    this.width=50;
+    fish.image = new Image();  
+    fish.image.src = "fish.png"; 
     this.speed=Math.floor(Math.random()*10)+1;
     //functions         
     this.draw = function ()
     { 
-        b_context.drawImage(this.image, this.x,this.y);     
+        b_context.drawImage(fish, this.x,this.y);     
         if(this.x<0){
             this.x=Math.floor(Math.random()*901)+1000;
             this.y=Math.floor(Math.random()*451);
+            this.boxY=this.y+this.height/2;
             this.speed=Math.floor(Math.random()*10)+1;
         }
         this.x-=this.speed;
+        this.boxX=this.x+this.width/2;
+        b_context.beginPath();
+        b_context.lineWidth="1";
+        b_context.strokeStyle="green";
+        b_context.rect(this.x,this.y,this.width,this.height); 
+        b_context.stroke();
         
     };     
 };
@@ -162,6 +158,8 @@ function Mine(){
     //attributes        
     this.x=Math.floor(Math.random()*901)+1000;
     this.y=Math.floor(Math.random()*401);
+    this.width=50;
+    this.height=48;
     this.image = new Image();  
     this.image.src = "mine.png";    
     this.speed=Math.floor(Math.random()*10)+1;
@@ -175,36 +173,96 @@ function Mine(){
             this.speed=Math.floor(Math.random()*10)+1;
         }
         this.x-=this.speed;
+        b_context.beginPath();
+        b_context.lineWidth="1";
+        b_context.strokeStyle="red";
+        b_context.rect(this.x,this.y,this.width,this.height); 
+        b_context.stroke();
+        
         
         
     };     
 };
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
+myFish.push(new Fish());
 
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+myMine.push(new Mine());
+
+myMine.push(new Mine());
 
 
 
 var update = function(){
     draw();
+     // var before="before"; 
+     //    b_context.font="italic 40px serif"; 
+     //    b_context.fillStyle = "rgb(200, 2, 2)";
+     //    b_context.fillText(before,40,150);   
     
-    
-    // for(this.i=0;i<myFish.length;i++){
-    //     myFish[i].draw();
-    // }   
-    // for(this.i=0;i<myMine.length;i++){
-    //     myMine[i].draw();
-    // }
-    // Shark.draw();
+     for(this.i=0;this.i<myFish.length;this.i++){
+        // var upber="fish update "+this.i; 
+        // b_context.font="italic 40px serif"; 
+        // b_context.fillStyle = "rgb(200, 2, 2)";
+        // b_context.fillText(upber,40,80);   
+        myFish[this.i].draw();
+        // var up="fish update "+this.i; 
+        // b_context.fillText(up,40,120);   
+     }   
+    for(this.i=0;this.i<myMine.length;this.i++){
+        myMine[this.i].draw();
+    }
+    Shark.draw();
     //debugger
-    // for(this.i=0;i<myFish.length;i++){
-    //     if(Shark.posx>myFish[i].x&&Shark.posx<myFish[i].x+myFish[i].width){
-    //         if(Shark.posy>myFish[i].x&&Shark.posy<myFish[i].y+myFish[i].height){
-    //             Shark.score+=20;
-    //             myFish[i].x=Math.floor(Math.random()*901)+1000;
-    //             myFish[i].y=Math.floor(Math.random()*451);
-    //         }
+    for(this.i=0;this.i<myFish.length;this.i++){
+        if(Shark.posx>myFish[this.i].x&&Shark.posx<myFish[this.i].x+myFish[this.i].width){
+            if(Shark.posy>myFish[this.i].x&&Shark.posy<myFish[this.i].y+myFish[this.i].height){
+                Shark.score+=20;
+                debugger
+                myFish[this.i].x=Math.floor(Math.random()*901)+1000;
+                myFish[this.i].y=Math.floor(Math.random()*451);
+            }
             
-    //     }
-    // }
+        }
+    }
+    for(this.i=0;this.i<myFish.length;this.i++){
+                         
+        if (myFish[this.i].x< Shark.boxX + Shark.width  
+            && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
+            && myFish[this.i].y < Shark.boxY + Shark.height 
+            && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
+            
+
+                    
+               Shark.score+=20;
+               // debugger
+                myFish[this.i].x=Math.floor(Math.random()*901)+1000;
+                myFish[this.i].y=Math.floor(Math.random()*451);
+              
+        
+        }
+                
+            
+
+        }
+     // var after="after"; 
+     //    b_context.font="italic 40px serif"; 
+     //    b_context.fillStyle = "rgb(200, 2, 2)";
+     //    b_context.fillText(after,40,180);   
     window.requestAnimFrame(update, document.body);
 
 };
@@ -235,20 +293,24 @@ var update = function(){
 //  windowg5.addEventListener( 'touchstart',function(event){
 //window.addEventListener( 'touchstart', onTouchStart, false );
 
-// b_canvas.addEventListener("mousedown", halmaOnClick, false);
+b_canvas.addEventListener("mousedown", doMouseDown, false);;
 
-// function halmaOnClick(e) {
+function doMouseDown(e) {
 
-//     px=e.pageX;
-//     py=e.pageY;
-// }
+    px=e.pageX;
+    py=e.pageY;
+}
 
-//b_context.addEventListener( 'touchstart', onTouchStart, false );
-//function onTouchStart(event) {
-//do stuff
+b_canvas.addEventListener( 'touchstart', doTouchStart, false );
+function doTouchStart(event){
 
+    event.preventDefault();
+    px = event.targetTouches[0].pageX;
+    py = event.targetTouches[0].pageY;
+  
+    
+}
 
-//}
 var app = {
     // Application Constructor
     initialize: function() {

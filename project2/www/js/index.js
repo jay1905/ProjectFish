@@ -20,7 +20,7 @@ var b_context = b_canvas.getContext("2d");
 var px= 250;
 var py = 150;
 var count =0;
-//var score=0;
+var stop=true;
 
 
 var shark = document.createElement('img');  
@@ -33,16 +33,6 @@ var BackGround = document.createElement('img');
 BackGround.src = 'Underwater.jpg';
 
 
-
-
-var showSprite=function()
-{
-
-    //b_context.drawImage(shark, x,y);
-
-
-}
-
 var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
     b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
@@ -51,15 +41,9 @@ var draw = function(){
     //var text="Count "+count; 
     b_context.font="italic 40px serif"; 
     b_context.fillStyle = "rgb(200, 2, 2)";
-    b_context.fillText(text,40,40);   
+    b_context.fillText(text,b_canvas.width/2,40);   
 
 };
-// window.onload=function()
-// {
-
-//     //this isn't called until after all the HTML elements are loaded
-//     //showSprite ();
-// };
 
 var Shark = new (function(){  
 
@@ -83,18 +67,20 @@ var Shark = new (function(){
     this.draw = function ()
     {
         //debugger
-        if(px>this.posx&&px>this.posx+5){
-            this.posx+=2;   
-        }
-        else if(px<this.posx&&px<this.posx-5){
-            this.posx-=2;
-        }
-        if(py>this.posy&&py>this.posy+5){
-            this.posy+=2;
-        }
-        else if(py<this.posy&&py<this.posy-5){
-            this.posy-=2;
-        }
+        // if(px>this.posx&&px>this.posx+5){
+        //     this.posx+=2;   
+        // }
+        // else if(px<this.posx&&px<this.posx-5){
+        //     this.posx-=2;
+        // }
+        // if(py>this.posy&&py>this.posy+5){
+        //     this.posy+=2;
+        // }
+        // else if(py<this.posy&&py<this.posy-5){
+        //     this.posy-=2;
+        // }
+        this.posx=px;
+        this.posy=py;
         b_context.drawImage(shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
         this.boxX=this.posx-this.width/2;
         this.boxY=this.posy-this.height/2;
@@ -208,76 +194,83 @@ myMine.push(new Mine());
 
 
 var update = function(){
+    if (!stop) {
     draw();
-     // var before="before"; 
-     //    b_context.font="italic 40px serif"; 
-     //    b_context.fillStyle = "rgb(200, 2, 2)";
-     //    b_context.fillText(before,40,150);   
-    
      for(this.i=0;this.i<myFish.length;this.i++){
-        // var upber="fish update "+this.i; 
-        // b_context.font="italic 40px serif"; 
-        // b_context.fillStyle = "rgb(200, 2, 2)";
-        // b_context.fillText(upber,40,80);   
+       
         myFish[this.i].draw();
-        // var up="fish update "+this.i; 
-        // b_context.fillText(up,40,120);   
+        
      }   
     for(this.i=0;this.i<myMine.length;this.i++){
         myMine[this.i].draw();
     }
     Shark.draw();
-    //debugger
-    for(this.i=0;this.i<myFish.length;this.i++){
-        if(Shark.posx>myFish[this.i].x&&Shark.posx<myFish[this.i].x+myFish[this.i].width){
-            if(Shark.posy>myFish[this.i].x&&Shark.posy<myFish[this.i].y+myFish[this.i].height){
-                Shark.score+=20;
-                //debugger
-                myFish[this.i].x=Math.floor(Math.random()*901)+1000;
-                myFish[this.i].y=Math.floor(Math.random()*451);
-            }
-            
-        }
-    }
+   
+    
     for(this.i=0;this.i<myFish.length;this.i++){
                          
         if (myFish[this.i].x< Shark.boxX + Shark.width  
             && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
             && myFish[this.i].y < Shark.boxY + Shark.height 
             && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
-            
 
-                    
-               Shark.score+=20;
-               // debugger
+                Shark.score+=1;
                 myFish[this.i].x=Math.floor(Math.random()*901)+1000;
                 myFish[this.i].y=Math.floor(Math.random()*451);
               
         
         }
-                
-            
+    }
 
+    for(this.i=0;this.i<myMine.length;this.i++){
+                         
+        if (myMine[this.i].x< Shark.boxX + Shark.width  
+            && myMine[this.i].x+ myMine[this.i].width  > Shark.boxX 
+            && myMine[this.i].y < Shark.boxY + Shark.height 
+            && myMine[this.i].y + myMine[this.i].height > Shark.boxY) {
+
+                gameOver();
+                // myMine[this.i].x=Math.floor(Math.random()*901)+1000;
+                // myMine[this.i].y=Math.floor(Math.random()*451);
+              
+        
         }
-     // var after="after"; 
-     //    b_context.font="italic 40px serif"; 
-     //    b_context.fillStyle = "rgb(200, 2, 2)";
-     //    b_context.fillText(after,40,180);   
+    }
+     
     window.requestAnimFrame(update, document.body);
+    };
 
 };
+function restart() {
+ 
+    for(this.i=0;this.i<myFish.length;this.i++){
+                         
+       myFish[this.i].x=Math.floor(Math.random()*901)+1000;
+       myFish[this.i].y=Math.floor(Math.random()*451);
+ 
+    }
+     for(this.i=0;this.i<myMine.length;this.i++){
+                         
+       myMine[this.i].x=Math.floor(Math.random()*901)+1000;
+       myMine[this.i].y=Math.floor(Math.random()*451);
+ 
+    }
+   stop=false;
+     Shark.score=0;
+    update();
+  
+}
 
+b_canvas.addEventListener("mousemove", doMouseMove, false);
 
-b_canvas.addEventListener("mousedown", doMouseDown, false);
-
-function doMouseDown(e) {
+function doMouseMove(e) {
 
     px=e.pageX;
     py=e.pageY;
 }
 
-b_canvas.addEventListener( 'touchstart', doTouchStart, false );
-function doTouchStart(event){
+b_canvas.addEventListener( 'touchmove', doTouchMove, false );
+function doTouchMove(event){
 
     event.preventDefault();
     px = event.targetTouches[0].pageX;
@@ -286,13 +279,44 @@ function doTouchStart(event){
     
 }
 
+function gameOver() {
+ 
+  $('#score').html(Shark.score);
+  $('#game-over').show();
+  stop=true;
+  
+}
+
 $('.play').click(function() {
- $('#menu').hide();
-  //$('#hud').show();
-  //stop=false;
-  //update();
+    $('#menu').hide();
+   
+   
+    restart();
 
   
+});
+$('.exit').click(function() {
+    $('#menu').show();
+   
+    $('#game-over').hide();
+    stop=true;
+  
+  
+  
+});
+$('.restart').click(function() {
+  $('#game-over').hide();
+  restart();
+});
+$('.credits').click(function() {
+  $('#menu').hide();
+  $('#credits').show();
+  //$('#menu').addClass('credits');
+});
+$('.back').click(function() {
+  $('#credits').hide();
+  $('#menu').show();
+  //$('#menu').removeClass('credits');
 });
 var app = {
     // Application Constructor
@@ -300,10 +324,10 @@ var app = {
        
         $('#main').show();
         $('#menu').addClass('main');
-        //$('#hud').hide();
-
+       
+        $('#game-over').hide();
     
-          window.requestAnimFrame(update, document.body);
+          
     }
     
 };

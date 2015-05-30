@@ -59,7 +59,6 @@ body {
 }
 
 
-
 ul {
   list-style: none;
   padding: 0;
@@ -107,7 +106,7 @@ a {
 }
 
 
-#main h1 {
+#menu h1 {
   color: white;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
@@ -115,16 +114,30 @@ a {
 #hud{
 
 position: fixed;
-bottom: 2%;
-left: 2%; 
+top: 2%;
+right: 2%; 
 z-index: 2;
 text-align: center;
 
 }
+#game-over {
+ position: absolute;
+            top: 20%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+ 
+  z-index: 2;
+  text-align: center;
+}
+#game-over h2{
+color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
 .button {
   display: block;
   width: 150px;
-  margin: 0 auto;
+  margin: 10 auto;
   height: 30px;
   line-height: 30px;
   border: 1px solid #AA2666;
@@ -143,13 +156,38 @@ text-align: center;
   background-image:         linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
 }
 
+#credits {
+  display: none;
+  line-height: 30px;
+  margin: auto;
+  position: absolute;
+  top: 20%; left: 0; bottom: 0; right: 0;
+   text-align: center;
 
-.layer {
-    width: 100%;
-    height:100%;
-    max-width: 100%;
-    max-height:100%;
-    overflow: hidden;
+}
+#credits li {
+  
+  padding: 5px 0;
+}
+
+.artwork, .music, .developer {
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.artwork {
+  color: #fa8526;
+}
+.music {
+  color: #e6e71f;
+}
+.developer {
+  color: #13eb8a;
+
+}
+
+.back, .back:hover {
+  margin-top: 10px;
+   text-align: center;
 }
 
 

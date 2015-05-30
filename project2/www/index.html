@@ -24,10 +24,25 @@
             
                  <ul>
                         <li><a href="javascript:void(0)" class="button play">Start Game</a></li>
+                        <li><a href="javascript:void(0)" class="button credits">Credits</a></li>
                  </ul>
             </div>
         </div>
-        
+
+        <div id="credits"> 
+            <ul>
+                 <li class="developer">Game Design & Development: <a >Jaime Aughney</a></li>
+            </ul>
+            <a href="javascript:void(0)" class="button back">Back</a>
+        </div>
+
+      
+        <div id="game-over">
+        <h2>Game Over</h2>
+            <h2>You ate <span id="score"></span> fish!</h2>
+            <a href="javascript:void(0)" class="button restart">Try again?</a>
+            <a href="javascript:void(0)" class="button exit">Exit</a>
+        </div>
         <canvas id="myCanvas"> </canvas>   
         <script type="text/javascript" src= "js/index.js"></script>
 

@@ -232,7 +232,7 @@ var update = function(){
         if(Shark.posx>myFish[this.i].x&&Shark.posx<myFish[this.i].x+myFish[this.i].width){
             if(Shark.posy>myFish[this.i].x&&Shark.posy<myFish[this.i].y+myFish[this.i].height){
                 Shark.score+=20;
-                debugger
+                //debugger
                 myFish[this.i].x=Math.floor(Math.random()*901)+1000;
                 myFish[this.i].y=Math.floor(Math.random()*451);
             }
@@ -268,32 +268,7 @@ var update = function(){
 };
 
 
-// window.requestAnimFrame(update, document.body);
-
-
-// window.addEventListener('keydown', function(event) {
-//     if (event.keyCode === 37) 
-//     {
-//         px--;    
-
-//     }
-//     if (event.keyCode === 39) {
-
-//         px++;   
-//     }
-//     if (event.keyCode === 38) {
-
-//         py--;
-//     }
-//     if (event.keyCode === 40) {
-//         py++;
-//     }  
-// }, false);
-
-//  windowg5.addEventListener( 'touchstart',function(event){
-//window.addEventListener( 'touchstart', onTouchStart, false );
-
-b_canvas.addEventListener("mousedown", doMouseDown, false);;
+b_canvas.addEventListener("mousedown", doMouseDown, false);
 
 function doMouseDown(e) {
 
@@ -311,10 +286,22 @@ function doTouchStart(event){
     
 }
 
+$('.play').click(function() {
+ $('#menu').hide();
+  //$('#hud').show();
+  //stop=false;
+  //update();
+
+  
+});
 var app = {
     // Application Constructor
     initialize: function() {
        
+        $('#main').show();
+        $('#menu').addClass('main');
+        //$('#hud').hide();
+
     
           window.requestAnimFrame(update, document.body);
     }

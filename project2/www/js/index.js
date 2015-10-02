@@ -21,14 +21,10 @@ var px= 250;
 var py = 150;
 var count =0;
 var stop=true;
+var dead=false;
+var deathPositionX=0;
+var deathPositionY=0;
 
-
-var shark = document.createElement('img');  
-shark.src = 'shark.png';
-var fish = document.createElement('img');  
-fish.src = 'fish.png';
-var mine = document.createElement('img');  
-mine.src = 'mine.png';
 var BackGround = document.createElement('img');  
 BackGround.src = 'Underwater.jpg';
 
@@ -42,8 +38,6 @@ var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
     b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
     var text="Score "+Shark.score;
-    //count+=1; 
-    //var text="Count "+count; 
     b_context.font="italic 40px serif"; 
     b_context.fillStyle = "rgb(200, 2, 2)";
     b_context.fillText(text,b_canvas.width/2,40);   
@@ -58,8 +52,8 @@ var Shark = new (function(){
     this.score=0;
     this.boxX;
     this.boxY;
-    shark.image = new Image();  
-    shark.image.src = "shark.png";  
+    this.shark= new Image();  
+    this.shark.src = "shark.png";  
     actualFrame = 0;
     this.height=52;
     this.width=56;
@@ -86,7 +80,7 @@ var Shark = new (function(){
         // }
         this.posx=px;
         this.posy=py;
-        b_context.drawImage(shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
+        b_context.drawImage(this.shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
         this.boxX=this.posx-this.width/2;
         this.boxY=this.posy-this.height/2;
         b_context.beginPath();
@@ -110,11 +104,10 @@ var Shark = new (function(){
 });
  var explosion = new (function(){
 
-
     this.explo = new Image();
     this.explo.src ='explo.png';
-    this.posx=50;
-    this.posy=50;
+    this.posx=0;
+    this.posy=0;
     this.score=0;
     this.boxX;
     this.boxY;
@@ -126,9 +119,10 @@ var Shark = new (function(){
     this.frames = 4; 
 
 
-    this.draw = function ()
+    this.draw = function (x,y)
     {
-        
+        this.posx=x;
+        this.posy=y;
         b_context.drawImage(this.explo, this.width* this.actualFrameX,this.height* this.actualFrameY , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
         this.boxX=this.posx-this.width/2;
         this.boxY=this.posy-this.height/2;
@@ -139,7 +133,7 @@ var Shark = new (function(){
             this.actualFrameY+=1;  
         } 
         else {  
-                if(this.frameCount==3){
+                if(this.frameCount==2){
                     this.actualFrameX++;  
                     this.frameCount=0;
                 }
@@ -166,13 +160,13 @@ function Fish(){
     this.boxY;
     this.height=50;
     this.width=50;
-    fish.image = new Image();  
-    fish.image.src = "fish.png"; 
+    this.fish = new Image();  
+    this.fish.src = "fish.png"; 
     this.speed=Math.floor(Math.random()*10)+1;
     //functions         
     this.draw = function ()
     { 
-        b_context.drawImage(fish, this.x,this.y);     
+        b_context.drawImage(this.fish, this.x,this.y);     
         if(this.x<0){
             this.x=Math.floor(Math.random()*901)+1000;
             this.y=Math.floor(Math.random()*451);
@@ -197,13 +191,13 @@ function Mine(){
     this.y=Math.floor(Math.random()*401);
     this.width=50;
     this.height=48;
-    this.image = new Image();  
-    this.image.src = "mine.png";    
+    this.mine = new Image();  
+    this.mine.src = "mine.png";    
     this.speed=Math.floor(Math.random()*10)+1;
     //functions         
     this.draw = function ()
     { 
-        b_context.drawImage(this.image, this.x,this.y);     
+        b_context.drawImage(this.mine, this.x,this.y);     
         if(this.x<0){
             this.x=Math.floor(Math.random()*901)+1000;
             this.y=Math.floor(Math.random()*451);
@@ -247,8 +241,8 @@ myMine.push(new Mine());
 var update = function(){
     if (!stop) {
     draw();
-    backingSound.play();
-    backingSound.loop=true;
+    //backingSound.play();
+    //backingSound.loop=true;
      for(this.i=0;this.i<myFish.length;this.i++){
        
         myFish[this.i].draw();
@@ -257,26 +251,26 @@ var update = function(){
     for(this.i=0;this.i<myMine.length;this.i++){
         myMine[this.i].draw();
     }
-    Shark.draw();
-    explosion.draw();
     
     
-    for(this.i=0;this.i<myFish.length;this.i++){
-                         
-        if (myFish[this.i].x< Shark.boxX + Shark.width  
-            && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
-            && myFish[this.i].y < Shark.boxY + Shark.height 
-            && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
+    
+    if (!dead) {
+        Shark.draw();
+        for(this.i=0;this.i<myFish.length;this.i++){
+                             
+            if (myFish[this.i].x< Shark.boxX + Shark.width  
+                && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
+                && myFish[this.i].y < Shark.boxY + Shark.height 
+                && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
 
-                eatingSound.currentTime=0;
-                eatingSound.play();
-                Shark.score+=1;
-                myFish[this.i].x=Math.floor(Math.random()*901)+1000;
-                myFish[this.i].y=Math.floor(Math.random()*451);
-              
-        
+                    eatingSound.currentTime=0;
+                    eatingSound.play();
+                    Shark.score+=1;
+                    myFish[this.i].x=Math.floor(Math.random()*901)+1000;
+                    myFish[this.i].y=Math.floor(Math.random()*451);       
+            }
         }
-    }
+    
 
     for(this.i=0;this.i<myMine.length;this.i++){
                          
@@ -285,18 +279,39 @@ var update = function(){
             && myMine[this.i].y < Shark.boxY + Shark.height 
             && myMine[this.i].y + myMine[this.i].height > Shark.boxY) {
 
-                explosionSound.play();
-                gameOver();
-                
-              
+                //explosionSound.play();
+               // explosion.draw();
+                //gameOver();
+                deathPositionX=myMine[this.i].x+myMine[this.i].width/2;
+                deathPositionY=myMine[this.i].y+myMine[this.i].height/2;
+                myMine[this.i].x=Math.floor(Math.random()*901)+1000;
+                myMine[this.i].y=Math.floor(Math.random()*451);       
+                death();
+                dead=true;
         
         }
     }
+    };
+    if (dead) {
+         explosion.draw(deathPositionX, deathPositionY);
+    };
      
     window.requestAnimFrame(update, document.body);
-    };
+    }
+    
 
 };
+function death(){
+
+    var myVar=setTimeout(function () {gameOver()}, 800);
+    explosionSound.play();
+   
+// function myTimer() {
+//     var d = new Date();
+//     document.getElementById("demo").innerHTML = d.toLocaleTimeString();
+// }
+
+}
 function restart() {
  
     for(this.i=0;this.i<myFish.length;this.i++){
@@ -312,7 +327,10 @@ function restart() {
  
     }
    stop=false;
+   dead = false;
      Shark.score=0;
+     explosion.actualFrameX=0;
+     explosion.actualFrameY=0;
     update();
   
 }

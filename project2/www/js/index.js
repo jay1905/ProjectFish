@@ -31,13 +31,13 @@ BackGround.src = 'Underwater.jpg';
 var eatingSound = new Audio('chomp2.wav');
 var explosionSound = new Audio('bomb.wav');
 var backingSound = new Audio('backing.wav');
-//eatingSound.src='chomp.wav';
+
 
 
 var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
     b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
-    var text="Score "+Shark.score;
+    var text="Fish "+Shark.score;
     b_context.font="italic 40px serif"; 
     b_context.fillStyle = "rgb(200, 2, 2)";
     b_context.fillText(text,b_canvas.width/2,40);   
@@ -83,11 +83,11 @@ var Shark = new (function(){
         b_context.drawImage(this.shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
         this.boxX=this.posx-this.width/2;
         this.boxY=this.posy-this.height/2;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="blue";
-        b_context.rect(this.boxX,this.boxY,this.width,this.height); 
-        b_context.stroke();
+        // b_context.beginPath();
+        // b_context.lineWidth="1";
+        // b_context.strokeStyle="blue";
+        // b_context.rect(this.boxX,this.boxY,this.width,this.height); 
+        // b_context.stroke();
 
 
         if (actualFrame == frames) {  
@@ -175,11 +175,11 @@ function Fish(){
         }
         this.x-=this.speed;
         this.boxX=this.x+this.width/2;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="green";
-        b_context.rect(this.x,this.y,this.width,this.height); 
-        b_context.stroke();
+        // b_context.beginPath();
+        // b_context.lineWidth="1";
+        // b_context.strokeStyle="green";
+        // b_context.rect(this.x,this.y,this.width,this.height); 
+        // b_context.stroke();
         
     };     
 };
@@ -204,11 +204,11 @@ function Mine(){
             this.speed=Math.floor(Math.random()*10)+1;
         }
         this.x-=this.speed;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="red";
-        b_context.rect(this.x,this.y,this.width,this.height); 
-        b_context.stroke();
+        // b_context.beginPath();
+        // b_context.lineWidth="1";
+        // b_context.strokeStyle="red";
+        // b_context.rect(this.x,this.y,this.width,this.height); 
+        // b_context.stroke();
         
         
         

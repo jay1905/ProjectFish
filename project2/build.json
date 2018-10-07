@@ -1,0 +1,11 @@
+{
+		"android":{
+			"release":{
+				"keystore":"projectFish.keystore",
+				"storePassword": "rosie19",
+				"alias": "projectFish",
+				"password":"rosie19",
+				"keystoreType":""
+			}
+		}
+}

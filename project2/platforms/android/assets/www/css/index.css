@@ -62,7 +62,13 @@ body {
 ul {
   list-style: none;
   padding: 0;
-  margin: 0
+  margin: 0;
+  position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
 }
 li {
   padding: 10px 0;
@@ -71,6 +77,7 @@ li {
 a {
   text-decoration: none;
   color: inherit;
+
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
@@ -90,12 +97,14 @@ a {
   
 }
 #menu.main {
-  background-image: url('imgs/menu.png');
+  background-image: url('imgs/MainMenu.png');
    background-repeat: no-repeat;
    background-size: 100% 100%;
+
   
 }
 #main {
+
   /*display: none;
   height: 60%;
   overflow: auto;
@@ -140,23 +149,24 @@ color: white;
   margin: 10 auto;
   height: 30px;
   line-height: 30px;
-  border: 1px solid #AA2666;
+  border: 1px solid #808080;
   color: white;
   font-weight: bold;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  background-color: #FB1886;
-  background-image: -webkit-linear-gradient(bottom, #FB1886 0%, #B30D5D 100%);
-  background-image:         linear-gradient(to bottom, #FB1886 0%, #B30D5D 100%);
+  text-align: center;
+  background-color: #FFA500;
+  background-image: -webkit-linear-gradient(bottom, #FFA500 0%, #FF8C00 100%);
+  background-image:         linear-gradient(to bottom, #FFA500 0%, #FF8C00 100%);
   border-radius: 5px;
 }
 
 .button:hover {
-  background-color: #B30D5D;
-  background-image: -webkit-linear-gradient(bottom, #B30D5D 0%, #FB1886 100%);
-  background-image:         linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
+  background-color: #FF8C00;
+  background-image: -webkit-linear-gradient(bottom, #FF8C00 0%, #FFA500 100%);
+  background-image:         linear-gradient(to bottom, #FF8C00 0%, #FFA500 100%);
 }
 
-#credits {
+#tutorial {
   display: none;
   line-height: 30px;
   margin: auto;
@@ -165,7 +175,7 @@ color: white;
    text-align: center;
 
 }
-#credits li {
+#tutorial li {
   
   padding: 5px 0;
 }
@@ -181,7 +191,7 @@ color: white;
   color: #e6e71f;
 }
 .developer {
-  color: #13eb8a;
+  color: #f8f8ff;
 
 }
 
@@ -189,5 +199,8 @@ color: white;
   margin-top: 10px;
    text-align: center;
 }
-
+.play, .play:hover {
+  margin-top: 10px;
+   text-align: center;
+}
 

@@ -11,40 +11,108 @@ window.requestAnimFrame = (function(){
 })();
 
 var b_canvas = document.getElementById("myCanvas");
-b_canvas.width=window.innerWidth;
-b_canvas.height=window.innerHeight;
-
-//You must pass the string "2d" to the getContext() method for 2D drawing
+b_canvas.width=window.screen.width;
+b_canvas.height=window.screen.height;
 var b_context = b_canvas.getContext("2d");
-// b_context.fillRect(50, 25, 150, 100);   
-var px= 250;
+b_context.font="italic 40px serif"; 
+b_context.fillStyle = "rgb(200, 2, 2)";
+var px= 150;
 var py = 150;
 var count =0;
 var stop=true;
-
-
-var shark = document.createElement('img');  
-shark.src = 'shark.png';
-var fish = document.createElement('img');  
-fish.src = 'fish.png';
-var mine = document.createElement('img');  
-mine.src = 'mine.png';
-var BackGround = document.createElement('img');  
-BackGround.src = 'Underwater.jpg';
+var dead=false;
+var deathPositionX=0;
+var deathPositionY=0;
+var myFish =[];
+var myMine =[];
+var fishDeathAnnimation=[];
+var backgroundObjects=[];
+var text; 
+var tutorialOn=true;
 
 
 var draw = function(){
     b_context.clearRect(0,0, b_canvas.width,b_canvas.height);
-    b_context.drawImage(BackGround,0,0,b_canvas.width,b_canvas.height);
-    var text="Score "+Shark.score;
-    //count+=1; 
-    //var text="Count "+count; 
-    b_context.font="italic 40px serif"; 
-    b_context.fillStyle = "rgb(200, 2, 2)";
+    b_context.fillStyle = "rgb(0, 200, 255)";
+    b_context.fillRect(0,0,b_canvas.width,b_canvas.height);
+    b_context.fillStyle= "rgb(244,164,96)";
+    b_context.fillRect(0,b_canvas.height/1.25,b_canvas.width,b_canvas.height);
+   
+ 
+    b_context.fillStyle = "rgb(240, 240, 240)";
+    text=Shark.score;
     b_context.fillText(text,b_canvas.width/2,40);   
-
 };
+var backgroundObj =  function(text){
+	this.backObject = new Image();
+	if(text==0){
+		this.backObject.src='redPlant.png';
+	}
+	else if(text ==1){
+		this.backObject.src='greenPlant.png';
+	}
+	else if(text==2){
+		this.backObject.src='pinkPlant.png';
+	}
+	else{
+		this.backObject.src='starFish.png';
+	}
+	this.speed=4;
+	this.minY=b_canvas.height/1.4;
+	this.maxY=b_canvas.height;
+	this.x=Math.floor(Math.random()*901)+b_canvas.width;
+	this.y=Math.floor(Math.random()*(this.maxY-this.minY))+this.minY;
+  	
+	this.draw = function(){
 
+        b_context.drawImage(this.backObject, this.x,this.y);     
+        
+        this.x-=this.speed;
+       
+	};
+};
+var Hand = new (function(){  
+
+    this.handImage= new Image();
+    this.handImage.src= 'hand.png';
+    this.x=400;
+    this.y=200;
+    this.draw = function(){
+        b_context.drawImage(this.handImage, this.x,this.y,100,200);     
+    };
+    this.update= function(){
+        this.x = px-this.handImage.width/3;
+        this.y=py;
+        this.draw();
+    };
+});
+var Tutorial = new (function(){
+    this.direction=true;
+    this.update= function(){
+        
+        b_context.fillStyle= "rgba(0,0,0,0.5)";
+        b_context.fillRect(0,0,b_canvas.width,b_canvas.height);
+        Hand.update(); 
+        if (this.direction==true)
+        {
+            if(py>100){
+                py-=2;
+            }
+            else{
+                this.direction=false;
+            }
+        } 
+        else if(this.direction==false){
+             if(py<300){
+                py+=2;
+            }
+            else{
+                this.direction=true;
+            }
+        }
+
+    };
+});
 var Shark = new (function(){  
 
     //attributes  
@@ -53,43 +121,31 @@ var Shark = new (function(){
     this.score=0;
     this.boxX;
     this.boxY;
-    shark.image = new Image();  
-    shark.image.src = "shark.png";  
+    this.shark= new Image();  
+    this.shark.src = "sharkSwimAnimation.png";  
     actualFrame = 0;
-    this.height=52;
-    this.width=56;
+    this.height=40;
+    this.width=60;
     frameCount =0;
-
+    var frames = 15;   //sprite has x frames, but count starts from 0  
     //functions
-    var frames = 14;   //sprite has 4 frames, but count starts from 0  
-
-
     this.draw = function ()
     {
-        //debugger
-        // if(px>this.posx&&px>this.posx+5){
-        //     this.posx+=2;   
-        // }
-        // else if(px<this.posx&&px<this.posx-5){
-        //     this.posx-=2;
-        // }
-        // if(py>this.posy&&py>this.posy+5){
-        //     this.posy+=2;
-        // }
-        // else if(py<this.posy&&py<this.posy-5){
-        //     this.posy-=2;
-        // }
-        this.posx=px;
-        this.posy=py;
-        b_context.drawImage(shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
+        
+        //this.posx=px;
+        //this.posy=py;
+//////////////////////////////new code
+        this.transformX= this.posx - px;
+        this.transformY= this.posy - py;
+
+        this.posx=px+this.transformX;
+        this.posy=py+this.transformY;
+/////////////////////////////////
+
+
+        b_context.drawImage(this.shark, this.width* actualFrame,0 , this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
         this.boxX=this.posx-this.width/2;
         this.boxY=this.posy-this.height/2;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="blue";
-        b_context.rect(this.boxX,this.boxY,this.width,this.height); 
-        b_context.stroke();
-
 
         if (actualFrame == frames) {  
             actualFrame = 0;  
@@ -103,38 +159,116 @@ var Shark = new (function(){
     };
 
 });
+ var explosion = new (function(){
+ 	//attributes
+    this.explo = new Image();
+    this.explo.src ='explosion1.png';
+    this.posx=0;
+    this.posy=0;
+    this.score=0;
+    this.boxX;
+    this.boxY;
+    this.actualFrameX = 0;
+    this.height=140;
+    this.width=140;
+    this.frameCount =0;
+    this.frames = 9; 
+    //functions
+    this.draw = function (x,y)
+    {
+        this.posx=x;
+        this.posy=y;
+        b_context.drawImage(this.explo, this.width* this.actualFrameX,0, this.width, this.height,this.posx-this.width/2,this.posy-this.height/2, this.width, this.height); 
+        this.boxX=this.posx-this.width/2;
+        this.boxY=this.posy-this.height/2;
+        if (this.actualFrameX ==this.frames) {  
+            this.actualFrameX = 0;
+        } 
+        else {  
+                if(this.frameCount==6){
+                    this.actualFrameX++;  
+                    this.frameCount=0;
+                }
+        }  
+        this.frameCount++;
+    };      
+ });
+ var fishDeath =  function(x,y){
+ 	//attributes
+    this.deathAnnimationFish = new Image();
+    this.deathAnnimationFish.src ='fishDeath.png';
+    this.posx=x;
+    this.posy=y;
+    this.score=0;
+    this.boxX;
+    this.boxY;
+    this.actualFrameX = 0;
+    this.height=100;
+    this.width=100;
+    this.frameCount =0;
+    this.frames = 5; 
+    this.annimationOver=false;
+    //functions
+    this.draw = function ()
+    {
+        
+        b_context.drawImage(this.deathAnnimationFish, this.width* this.actualFrameX,0, this.width, this.height,this.posx,this.posy, 32, 32); 
+        this.boxX=this.posx-this.width/2;
+        this.boxY=this.posy-this.height/2;
+        if (this.actualFrameX ==this.frames) {  
+        	this.annimationOver=true;
+            this.actualFrameX = 0;
+        } 
+        else {  
+                if(this.frameCount==4){
+                    this.actualFrameX++;  
+                    this.frameCount=0;
+                }
+        }  
+        this.frameCount++;
+    };      
+ };
 
-var myFish =[];
-var myMine =[];
 
 function Fish(){   
     //attributes        
-    this.x=Math.floor(Math.random()*901)+1000;
-    this.y=Math.floor(Math.random()*401);
+    this.x=Math.floor(Math.random()*901)+b_canvas.width;
+    this.y=Math.floor(Math.random()*b_canvas.height);
     this.boxX;
     this.boxY;
-    this.height=50;
-    this.width=50;
-    fish.image = new Image();  
-    fish.image.src = "fish.png"; 
+    this.height=32;
+    this.width=32;
+    this.fish = new Image();  
+    this.fish.src = "fish2.png"; 
     this.speed=Math.floor(Math.random()*10)+1;
+    this.actualFrame = 0;
+    this.frames=3;
+    this.frameCount =0;
+
     //functions         
     this.draw = function ()
     { 
-        b_context.drawImage(fish, this.x,this.y);     
-        if(this.x<0){
-            this.x=Math.floor(Math.random()*901)+1000;
-            this.y=Math.floor(Math.random()*451);
+        b_context.drawImage(this.fish, this.width* this.actualFrame,0 , this.width, this.height,this.x,this.y, this.width, this.height); 
+        
+        if(this.x<-50){
+            this.x=Math.floor(Math.random()*901)+b_canvas.width;
+            this.y=Math.floor(Math.random()*b_canvas.height);
             this.boxY=this.y+this.height/2;
             this.speed=Math.floor(Math.random()*10)+1;
         }
         this.x-=this.speed;
         this.boxX=this.x+this.width/2;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="green";
-        b_context.rect(this.x,this.y,this.width,this.height); 
-        b_context.stroke();
+       
+        if (this.actualFrame == this.frames) {  
+            this.actualFrame = 0;  
+        } 
+        else {  
+            if(this.frameCount==5){
+                this.actualFrame++;  
+                this.frameCount=0;
+            }
+        }  
+        this.frameCount++;
         
     };     
 };
@@ -142,140 +276,188 @@ function Fish(){
 
 function Mine(){   
     //attributes        
-    this.x=Math.floor(Math.random()*901)+1000;
-    this.y=Math.floor(Math.random()*401);
-    this.width=50;
-    this.height=48;
-    this.image = new Image();  
-    this.image.src = "mine.png";    
+    this.x=Math.floor(Math.random()*901)+b_canvas.width;
+    this.y=Math.floor(Math.random()*b_canvas.height);
+    this.mine = new Image();
+    this.mine.src = "Mine2.png";  
     this.speed=Math.floor(Math.random()*10)+1;
-    //functions         
+    
+    var w=0;
+    var h=0;
+	this.mine.onload = function(){
+		
+  		h = this.height;
+  		 w = this.width;
+	}    
     this.draw = function ()
     { 
-        b_context.drawImage(this.image, this.x,this.y);     
-        if(this.x<0){
-            this.x=Math.floor(Math.random()*901)+1000;
-            this.y=Math.floor(Math.random()*451);
+        b_context.drawImage(this.mine, this.x,this.y);     
+        if(this.x<-100){
+            this.x=Math.floor(Math.random()*901)+b_canvas.width;
+            this.y=Math.floor(Math.random()*b_canvas.height);
             this.speed=Math.floor(Math.random()*10)+1;
         }
-        this.x-=this.speed;
-        b_context.beginPath();
-        b_context.lineWidth="1";
-        b_context.strokeStyle="red";
-        b_context.rect(this.x,this.y,this.width,this.height); 
-        b_context.stroke();
-        
-        
-        
+        this.x-=this.speed; 
     };     
 };
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
-myFish.push(new Fish());
+for (var i = 0; i < 10; i++) {
+	myFish.push(new Fish());
+}
+for (var i = 0; i < 10; i++) {
+	myMine.push(new Mine());	
+}
 
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
-myMine.push(new Mine());
+function backgroundManager(){
 
-myMine.push(new Mine());
+	if(Math.floor(Math.random()*100)==5){
+		backgroundObjects.push(new backgroundObj(Math.floor(Math.random()*4)));
+	}
+	for (this.i=0;this.i<backgroundObjects.length;this.i++) {
+	    
+	    	backgroundObjects[this.i].draw();
+	    
+	}
+	for(this.i=0; this.i<backgroundObjects.length;this.i++){
+		
+		if( backgroundObjects[this.i].x<-100){
+	    	backgroundObjects.splice(this.i,1);
 
-
-
+	    	//console.log(backgroundObjects.length);
+	    }
+	    
+	}
+}
 var update = function(){
     if (!stop) {
-    draw();
-     for(this.i=0;this.i<myFish.length;this.i++){
-       
-        myFish[this.i].draw();
-        
-     }   
-    for(this.i=0;this.i<myMine.length;this.i++){
-        myMine[this.i].draw();
-    }
-    Shark.draw();
-   
-    
-    for(this.i=0;this.i<myFish.length;this.i++){
-                         
-        if (myFish[this.i].x< Shark.boxX + Shark.width  
-            && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
-            && myFish[this.i].y < Shark.boxY + Shark.height 
-            && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
 
-                Shark.score+=1;
-                myFish[this.i].x=Math.floor(Math.random()*901)+1000;
-                myFish[this.i].y=Math.floor(Math.random()*451);
-              
-        
+        if(tutorialOn){
+            draw();
+            
+            Shark.draw();
+            Tutorial.update();
+
         }
+        else{
+
+    	    draw();
+    	    backgroundManager();
+           
+    		for(this.i=0;this.i<myFish.length;this.i++){
+    	       
+    	        myFish[this.i].draw();
+    	        
+    	    }   
+    	    for(this.i=0;this.i<myMine.length;this.i++){
+    	        myMine[this.i].draw();
+    	    }
+    	    if (!dead) {
+    	        Shark.draw();
+    	        for(this.i=0;this.i<myFish.length;this.i++){
+    	                             
+    	            if (myFish[this.i].x< Shark.boxX + Shark.width  
+    	                && myFish[this.i].x+ myFish[this.i].width  > Shark.boxX 
+    	                && myFish[this.i].y < Shark.boxY + Shark.height 
+    	                && myFish[this.i].y + myFish[this.i].height > Shark.boxY) {
+
+    	                 
+    	                   
+    	                	window.plugins.NativeAudio.play('chomp2' );
+    	                    Shark.score+=1;
+    	                    fishDeathAnnimation.push(new fishDeath(myFish[this.i].x,myFish[this.i].y));
+    	                    myFish[this.i].x=Math.floor(Math.random()*901)+b_canvas.width;
+    	                    myFish[this.i].y=Math.floor(Math.random()*b_canvas.height);       
+    	            }
+    	        }
+    		    for(this.i=0;this.i<myMine.length;this.i++){
+    		        if (myMine[this.i].x< Shark.boxX + Shark.width  
+    		            && myMine[this.i].x+ myMine[this.i].mine.width  > Shark.boxX 
+    		            && myMine[this.i].y < Shark.boxY + Shark.height 
+    		            && myMine[this.i].y + myMine[this.i].mine.height > Shark.boxY) {
+
+    		                deathPositionX=myMine[this.i].x+myMine[this.i].mine.width/2;
+    		                deathPositionY=myMine[this.i].y+myMine[this.i].mine.height/2;
+    		                myMine[this.i].x=Math.floor(Math.random()*901)+b_canvas.width;
+    		                myMine[this.i].y=Math.floor(Math.random()*b_canvas.height);       
+    		                death();
+    		                dead=true;
+    		        
+    		        }
+    		    }
+    	    };
+    	    if(fishDeathAnnimation.length>0){
+    	    	for(this.i=0;this.i<fishDeathAnnimation.length;this.i++){
+    	    		if(fishDeathAnnimation[this.i].annimationOver==false){
+    	    			fishDeathAnnimation[this.i].draw();
+    	    		}
+    	    		else{
+    	    			fishDeathAnnimation.splice(this.i,1);
+    	    		}
+    	    	}
+
+
+    	    };
+    	    if (dead) {
+    	        explosion.draw(deathPositionX, deathPositionY);
+    	    };
+	    }
+	    window.requestAnimFrame(update, document.body);
     }
-
-    for(this.i=0;this.i<myMine.length;this.i++){
-                         
-        if (myMine[this.i].x< Shark.boxX + Shark.width  
-            && myMine[this.i].x+ myMine[this.i].width  > Shark.boxX 
-            && myMine[this.i].y < Shark.boxY + Shark.height 
-            && myMine[this.i].y + myMine[this.i].height > Shark.boxY) {
-
-                gameOver();
-                // myMine[this.i].x=Math.floor(Math.random()*901)+1000;
-                // myMine[this.i].y=Math.floor(Math.random()*451);
-              
-        
-        }
-    }
-     
-    window.requestAnimFrame(update, document.body);
-    };
-
 };
+function death(){
+
+    var myVar=setTimeout(function () {gameOver()}, 800);
+     window.plugins.NativeAudio.play('bomb'); 
+
+}
 function restart() {
  
     for(this.i=0;this.i<myFish.length;this.i++){
                          
-       myFish[this.i].x=Math.floor(Math.random()*901)+1000;
-       myFish[this.i].y=Math.floor(Math.random()*451);
+       myFish[this.i].x=Math.floor(Math.random()*901)+b_canvas.width;
+       myFish[this.i].y=Math.floor(Math.random()*b_canvas.height);
  
     }
      for(this.i=0;this.i<myMine.length;this.i++){
                          
-       myMine[this.i].x=Math.floor(Math.random()*901)+1000;
-       myMine[this.i].y=Math.floor(Math.random()*451);
+       myMine[this.i].x=Math.floor(Math.random()*901)+b_canvas.width;
+       myMine[this.i].y=Math.floor(Math.random()*b_canvas.height);
  
     }
    stop=false;
+   dead = false;
+   px =150;
+   py=150;
      Shark.score=0;
+     explosion.actualFrameX=0;
+     explosion.actualFrameY=0;
     update();
   
 }
 
-b_canvas.addEventListener("mousemove", doMouseMove, false);
+// b_canvas.addEventListener("mousemove", doMouseMove, false);
 
-function doMouseMove(e) {
+// function doMouseMove(e) {
 
-    px=e.pageX;
-    py=e.pageY;
-}
+//    // px=e.pageX;
+//     //py=e.pageY;
+// }
 
 b_canvas.addEventListener( 'touchmove', doTouchMove, false );
 function doTouchMove(event){
 
     event.preventDefault();
-    px = event.targetTouches[0].pageX;
-    py = event.targetTouches[0].pageY;
+    if(event.targetTouches[0].pageX>Shark.posx- Shark.width/2 &&
+        event.targetTouches[0].pageX< Shark.posx+Shark.width/2)
+    {
+         if(event.targetTouches[0].pageY>Shark.posy- Shark.height/2 &&
+        event.targetTouches[0].pageY< Shark.posy+Shark.height/2)
+         {
+             px = event.targetTouches[0].pageX;
+             py = event.targetTouches[0].pageY;
   
+         }
+    }
+   
     
 }
 
@@ -284,13 +466,16 @@ function gameOver() {
   $('#score').html(Shark.score);
   $('#game-over').show();
   stop=true;
+  //showBannerFunc();
   
 }
 
 $('.play').click(function() {
     $('#menu').hide();
-   
-   
+    $('#tutorial').show();
+  $('#menu').addClass('tutorial');
+   tutorialOn=true;
+   //window.plugins.AdMob.destroyBannerView();
     restart();
 
   
@@ -306,71 +491,124 @@ $('.exit').click(function() {
 });
 $('.restart').click(function() {
   $('#game-over').hide();
+  //window.plugins.AdMob.destroyBannerView();
   restart();
 });
-$('.credits').click(function() {
+$('.tutorial').click(function() {
   $('#menu').hide();
-  $('#credits').show();
-  //$('#menu').addClass('credits');
+  $('#tutorial').show();
+  $('#menu').addClass('tutorial');
 });
 $('.back').click(function() {
-  $('#credits').hide();
-  $('#menu').show();
-  //$('#menu').removeClass('credits');
+  $('#tutorial').hide();
+  tutorialOn=false;
+  //$('#menu').show();
+  $('#menu').removeClass('tutorial');
 });
+
+//initialize the goodies 
+// function initAd(){
+//         if ( window.plugins && window.plugins.AdMob ) {
+//             var ad_units = {
+//                 ios : {
+//                     banner: 'ca-app-pub-5362655013589543/1056359917',		//PUT ADMOB ADCODE HERE 
+//                     interstitial: 'ca-app-pub-5362655013589543/2533093115'	//PUT ADMOB ADCODE HERE 
+//                 },
+//                 android : {
+//                     banner: 'ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx',		//PUT ADMOB ADCODE HERE 
+//                     interstitial: 'ca-app-pub-xxxxxxxxxxx/xxxxxxxxxxx'	//PUT ADMOB ADCODE HERE 
+//                 }
+//             };
+//             var admobid = ( /(android)/i.test(navigator.userAgent) ) ? ad_units.android : ad_units.ios;
+ 
+//             window.plugins.AdMob.setOptions( {
+//                 publisherId: admobid.banner,
+//                 interstitialAdId: admobid.interstitial,
+//                 adSize: window.plugins.AdMob.AD_SIZE.SMART_BANNER,	//use SMART_BANNER, BANNER, LARGE_BANNER, IAB_MRECT, IAB_BANNER, IAB_LEADERBOARD 
+//                 bannerAtTop: false, // set to true, to put banner at top 
+//                 overlap: true, // banner will overlap webview 
+//                 offsetTopBar: false, // set to true to avoid ios7 status bar overlap 
+//                 isTesting: false, // receiving test ad 
+//                 autoShow: true // auto show interstitial ad when loaded 
+//             });
+ 
+//             registerAdEvents();
+//         } else {
+//             //alert( 'admob plugin not ready' ); 
+//         }
+// }
+//functions to allow you to know when ads are shown, etc. 
+// function registerAdEvents() {
+//         document.addEventListener('onReceiveAd', function(){});
+//         document.addEventListener('onFailedToReceiveAd', function(data){});
+//         document.addEventListener('onPresentAd', function(){});
+//         document.addEventListener('onDismissAd', function(){ });
+//         document.addEventListener('onLeaveToAd', function(){ });
+//         document.addEventListener('onReceiveInterstitialAd', function(){ });
+//         document.addEventListener('onPresentInterstitialAd', function(){ });
+//         document.addEventListener('onDismissInterstitialAd', function(){ });
+//     }
+//     //display the banner 
+// function showBannerFunc(){
+//     window.plugins.AdMob.createBannerView();
+// }
+// //display the interstitial 
+// function showInterstitialFunc(){
+//     window.plugins.AdMob.createInterstitialView();	//get the interstitials ready to be shown and show when it's loaded. 
+//     window.plugins.AdMob.requestInterstitialAd();
+// }
+
+function onLoad() {
+    document.addEventListener("deviceready", onDeviceReady, true);
+    b_context.fillStyle = "rgb(0, 200, 0)";
+    b_context.fillRect(0,0,b_canvas.width,b_canvas.height);
+}
+function onDeviceReady() {
+       
+    $('#game-over').hide();
+	$('#main').show();
+    $('#menu').addClass('main');
+     $('#tutorial').show();
+    $('#menu').addClass('tutorial');
+   
+ 
+ 	// initAd();
+ 	 //showBannerFunc();
+ 	 //showInterstitialFunc();
+
+	 if( window.plugins && window.plugins.NativeAudio ) {
+	
+            var items = ['bomb', 'chomp2'];
+            for(var i=0; i<items.length; i++) {
+                var asset = 'assets/' + items[i] + '.wav';
+                window.plugins.NativeAudio.preloadSimple(items[i], 
+                                                         asset, 
+                                                         function(msg){console.info(msg)}, 
+                                                         function(msg){ console.error( 'Error: ' + msg ); });
+            }
+            window.plugins.NativeAudio.preloadComplex('backing', 
+                                                      'assets/backingTrack.wav', 
+                                                      1, // volume
+                                                      1, // voices
+                                                      0, // delay
+            function(msg) {
+                console.info(msg); 
+                window.plugins.NativeAudio.loop('backing', 
+                                                function(msg){console.info(msg)}, 
+                                                function(msg){ console.error( 'Error: ' + msg ); }, 
+                                                function(msg){ console.error( 'Complete: ' + msg ); });
+            }, 
+                                                      function(msg){ alert( 'Error: ' + msg ); });
+        }
+ 
+
+}
 var app = {
-    // Application Constructor
-    initialize: function() {
+   
+   initialize: function() {
        
-        $('#main').show();
-        $('#menu').addClass('main');
-       
-        $('#game-over').hide();
-    
-          
-    }
+    },
     
 };
+
 app.initialize();
-
-//  b_context.addEventListener('touchmove', function(event) {
-//   event.preventDefault();
-//    var touch = event.touches[0];
-//    console.log("Touch x:" + touch.pageX + ", y:" + touch.pageY);
-//    x=touch.pageX;
-//    y=touch.pageY;
-
-//  }, false);
-// var app = {
-//     // Application Constructor
-//     initialize: function() {
-//         this.bindEvents();
-//     },
-//     // Bind Event Listeners
-//     //
-//     // Bind any events that are required on startup. Common events are:
-//     // 'load', 'deviceready', 'offline', and 'online'.
-//     bindEvents: function() {
-//         document.addEventListener('deviceready', this.onDeviceReady, false);
-//     },
-//     // deviceready Event Handler
-//     //
-//     // The scope of 'this' is the event. In order to call the 'receivedEvent'
-//     // function, we must explicitly call 'app.receivedEvent(...);'
-//     onDeviceReady: function() {
-//         app.receivedEvent('deviceready');
-//     },
-//     // Update DOM on a Received Event
-//     receivedEvent: function(id) {
-//         var parentElement = document.getElementById(id);
-//         var listeningElement = parentElement.querySelector('.listening');
-//         var receivedElement = parentElement.querySelector('.received');
-
-//         listeningElement.setAttribute('style', 'display:none;');
-//         receivedElement.setAttribute('style', 'display:block;');
-
-//         console.log('Received Event: ' + id);
-//     }
-// };
-
-// app.initialize();
